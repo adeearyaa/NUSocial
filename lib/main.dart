@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 
+import './addFriends.dart';
+import './chats.dart';
+import './friends.dart';
+import './games.dart';
+import './profile.dart';
+import './settings.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
@@ -13,8 +20,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Text(_title,style: TextStyle(fontSize: 30),),
-          backgroundColor: Colors.deepOrange,),
+        appBar: AppBar(
+          title: const Text(
+            _title,
+            style: TextStyle(fontSize: 30),
+          ),
+          backgroundColor: Colors.deepOrange,
+        ),
         body: const MyStatefulWidget(),
       ),
     );
@@ -80,10 +92,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               onPressed: () {
                 //forgot password screen
               },
-              child: const Text('Forgot Password',),
+              child: const Text(
+                'Forgot Password',
+              ),
             ),
             Container(
-                height:50,
+                height: 50,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
                   child: const Text('Login'),
@@ -91,8 +105,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     print(nameController.text);
                     print(passwordController.text);
                   },
-                )
-            ),
+                )),
             Row(
               children: <Widget>[
                 const Text('Not a member?'),
@@ -102,7 +115,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignUpScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SignUpScreen()));
                   },
                 )
               ],
@@ -113,12 +127,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 }
 
-class SignUpScreen extends StatefulWidget{
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
-
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -126,95 +139,93 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController newpassword = TextEditingController();
   TextEditingController secondpassword = TextEditingController();
 
-
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SIGN UP',
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('SIGN UP', style: TextStyle(fontSize: 30),),
-            backgroundColor: Colors.deepOrange,),
+            title: const Text(
+              'SIGN UP',
+              style: TextStyle(fontSize: 30),
+            ),
+            backgroundColor: Colors.deepOrange,
+          ),
           body: Padding(
               padding: const EdgeInsets.all(15),
-              child: Column(
+              child: Column(children: <Widget>[
+                Row(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        IconButton(onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>MyApp()));
-                        }, icon: Icon(
-                            Icons.arrow_back
-                        )
-                        )
-                      ],
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.arrow_back))
+                  ],
+                ),
+                Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'NEW ACCOUNT',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 30),
+                    )),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: TextField(
+                    controller: newid,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Choose a new username',
                     ),
-                    Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(10),
-                        child: const Text(
-                          'NEW ACCOUNT',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 30),
-                        )),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      child: TextField(
-                        controller: newid,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Choose a new username',
-                        ),
-                      ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: TextField(
+                    obscureText: true,
+                    controller: newpassword,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'New Password',
                     ),
-
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                      child: TextField(
-                        obscureText: true,
-                        controller: newpassword,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'New Password',
-                        ),
-                      ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: TextField(
+                    obscureText: true,
+                    controller: secondpassword,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Confirm Password',
                     ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                      child: TextField(
-                        obscureText: true,
-                        controller: secondpassword,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Confirm Password',
-                        ),
-                      ),
-                    ),
-                    Container(
-                        height:50,
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                        child: ElevatedButton(
-                          child: const Text('Confirm account'),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>WelcomePage()));
-                          },
-                        )
-                    ),
-                  ]))
-      ),
+                  ),
+                ),
+                Container(
+                    height: 50,
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                    child: ElevatedButton(
+                      child: const Text('Confirm account'),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => WelcomePage()));
+                      },
+                    )),
+              ]))),
     );
   }
 }
 
-class WelcomePage extends StatefulWidget{
+class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
-
 }
 
 class _WelcomePageState extends State<WelcomePage> {
@@ -223,72 +234,96 @@ class _WelcomePageState extends State<WelcomePage> {
     return MaterialApp(
         title: 'SIGN UP',
         home: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'WELCOME BACK USERNAME', style: TextStyle(fontSize: 20),),
-              backgroundColor: Colors.deepOrange,),
-            body: Padding(
-                padding: const EdgeInsets.fromLTRB(15,80,15,15),
-                child: GridView.count(
-                    primary: false,
-                    padding: const EdgeInsets.all(15),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount: 2,
-                    children: <Widget>[
-                      ElevatedButton.icon(onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => MyApp()));
-                      }, icon: Icon(
-                          Icons.person_add, size:50
-                      ),
+          appBar: AppBar(
+            title: const Text(
+              'DASHBOARD',
+              style: TextStyle(fontSize: 20),
+            ),
+            backgroundColor: Colors.deepOrange,
+          ),
+          body: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 80, 15, 15),
+              child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(15),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 2,
+                  children: <Widget>[
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.person_add, size: 50),
                         label: Text("Add Friends"),
-                          style: ElevatedButton.styleFrom(
-                            primary : Colors.lightBlue,
-                          )
-                      ),
-                      ElevatedButton.icon(onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => MyApp()));
-                      }, icon: Icon(
-                          Icons.emoji_events_outlined, size:50
-                      ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightBlue,
+                        )),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.emoji_events_outlined, size: 50),
                         label: Text("Games"),
-                          style: ElevatedButton.styleFrom(
-                            primary : Colors.lightBlue,
-                          )
-                      ),
-                      ElevatedButton.icon(onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => MyApp()));
-                      }, icon: Icon(
-                          Icons.chat_bubble_outline_outlined, size:50
-                      ),
-                        label: Text("Chat"),
-                          style: ElevatedButton.styleFrom(
-                            primary : Colors.lightBlue,
-                          )
-                      ),
-                      ElevatedButton.icon(onPressed: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => MyApp()));
-                      }, icon: Icon(
-                          Icons.people_alt, size:50
-                      ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightBlue,
+                        )),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon:
+                            Icon(Icons.chat_bubble_outline_outlined, size: 50),
+                        label: Text("Chats"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightBlue,
+                        )),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.people_alt, size: 50),
                         label: Text("My Friends"),
                         style: ElevatedButton.styleFrom(
-                          primary : Colors.lightBlue,
-                        )
-                      )
-                    ]
-
-                )
-            )
-        )
-    );
+                          primary: Colors.lightBlue,
+                        )),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.person, size: 50),
+                        label: Text("Profile"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightBlue,
+                        )),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => MyApp()));
+                        },
+                        icon: Icon(Icons.app_settings_alt_outlined, size: 50),
+                        label: Text("Settings"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.lightBlue,
+                        ))
+                  ])),
+          floatingActionButton: Container(
+              height: 50,
+              width: 100,
+              child: ElevatedButton(
+                child: const Text('Logout'),
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => MyApp()));
+                },
+              )),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        ));
   }
 }
-
-
-
-
