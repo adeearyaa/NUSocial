@@ -42,7 +42,7 @@ class GamesPage extends StatelessWidget {
           if (value == 1) ;
           if (value == 2)
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => SettingsPage()));
+                .push(MaterialPageRoute(builder: (context) => ChatsPage()));
         },
       ),
     );
