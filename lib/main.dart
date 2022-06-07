@@ -12,6 +12,8 @@ void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+  static const primaryColourOrange = Colors.deepOrange;
+  static const primaryColourBlue = Colors.lightBlue;
 
   static const String _title = 'NUSocial';
 
@@ -236,7 +238,7 @@ class _WelcomePageState extends State<WelcomePage> {
         home: Scaffold(
           appBar: AppBar(
             title: const Text(
-              'DASHBOARD',
+              'Dashboard',
               style: TextStyle(fontSize: 20),
             ),
             backgroundColor: Colors.deepOrange,

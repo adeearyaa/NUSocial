@@ -11,6 +11,10 @@ class FriendsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Friends'),
+        backgroundColor: MyApp.primaryColourOrange,
+      ),
       body: Container(
         child: Center(child: Text("Friends")),
       ),

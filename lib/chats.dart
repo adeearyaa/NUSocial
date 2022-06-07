@@ -13,6 +13,7 @@ class ChatsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chats'),
+        backgroundColor: MyApp.primaryColourOrange,
         actions: [
           IconButton(
             icon: const Icon(Icons.search_outlined),
