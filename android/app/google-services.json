@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "792133017378",
+    "project_id": "nusocial-4c9b4",
+    "storage_bucket": "nusocial-4c9b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792133017378:android:76a18369f8ddf0c6f54f7b",
+        "android_client_info": {
+          "package_name": "com.example.nus_social"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "792133017378-79qs51te215g89ifl9u7ghsdcc3mrkju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTBqBPDASFJkPzjLnmDpqltI-5dIhAlyM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "792133017378-79qs51te215g89ifl9u7ghsdcc3mrkju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "792133017378-23lmuki42qjs3d0s1e85egepphfp9rp3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.nusSocial"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
