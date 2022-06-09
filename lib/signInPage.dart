@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/authentication.dart';
+import 'package:nus_social/signUp.dart';
 import 'package:provider/provider.dart';
 import 'main.dart';
 import 'authentication.dart';
