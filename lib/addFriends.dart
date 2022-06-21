@@ -13,7 +13,7 @@ class AddFriendsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Friends'),
-        backgroundColor: MyApp.primaryColourOrange,
+        backgroundColor: Colors.deepOrange,
       ),
       body: Container(
         child: Center(child: Text("AddFriends")),

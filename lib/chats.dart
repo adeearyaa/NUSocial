@@ -6,6 +6,7 @@ import './friends.dart';
 import './games.dart';
 import './profile.dart';
 import './settings.dart';
+import 'homePage.dart';
 
 class ChatsPage extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class ChatsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chats'),
-        backgroundColor: MyApp.primaryColourOrange,
+        backgroundColor: Colors.deepOrange,
         actions: [
           IconButton(
             icon: const Icon(Icons.search_outlined),

@@ -1,331 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
+import 'package:nus_social/authentication.dart';
+import 'package:nus_social/homePage.dart';
+import 'package:nus_social/signInPage.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'authentication.dart';
+import 'signInPage.dart';
+import 'homePage.dart';
 
-import './addFriends.dart';
-import './chats.dart';
-import './friends.dart';
-import './games.dart';
-import './profile.dart';
-import './settings.dart';
-
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   static const primaryColourOrange = Colors.deepOrange;
   static const primaryColourBlue = Colors.lightBlue;
 
-  static const String _title = 'NUSocial';
+  static const _title = 'NUSocial';
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            _title,
-            style: TextStyle(fontSize: 30),
+    return MultiProvider(
+        providers: [
+          Provider<AuthenticationService>(
+            create: (_) => AuthenticationService(FirebaseAuth.instance),
           ),
-          backgroundColor: Colors.deepOrange,
-        ),
-        body: const MyStatefulWidget(),
-      ),
-    );
-  }
-}
-
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.all(15),
-        child: ListView(
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'WELCOME!',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(fontSize: 20),
-                )),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'User Name',
-                ),
+          StreamProvider(
+              create: (context) =>
+                  context.read<AuthenticationService>().authStateChanges,
+              initialData: null),
+        ],
+        child: MaterialApp(
+          title: _title,
+          home: Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                _title,
+                style: TextStyle(fontSize: 30),
               ),
+              backgroundColor: Colors.deepOrange,
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                //forgot password screen
-              },
-              child: const Text(
-                'Forgot Password',
-              ),
-            ),
-            Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  child: const Text('Login'),
-                  onPressed: () {
-                    print(nameController.text);
-                    print(passwordController.text);
-                  },
-                )),
-            Row(
-              children: <Widget>[
-                const Text('Not a member?'),
-                TextButton(
-                  child: const Text(
-                    'Sign up!',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SignUpScreen()));
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
+            body: const AuthenticationWrapper(),
+          ),
         ));
   }
 }
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
-
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
-
-class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController newid = TextEditingController();
-  TextEditingController newpassword = TextEditingController();
-  TextEditingController secondpassword = TextEditingController();
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SIGN UP',
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'SIGN UP',
-              style: TextStyle(fontSize: 30),
-            ),
-            backgroundColor: Colors.deepOrange,
-          ),
-          body: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => MyApp()));
-                        },
-                        icon: Icon(Icons.arrow_back))
-                  ],
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'NEW ACCOUNT',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 30),
-                    )),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: TextField(
-                    controller: newid,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Choose a new username',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: TextField(
-                    obscureText: true,
-                    controller: newpassword,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'New Password',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: TextField(
-                    obscureText: true,
-                    controller: secondpassword,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Confirm Password',
-                    ),
-                  ),
-                ),
-                Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Confirm account'),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => WelcomePage()));
-                      },
-                    )),
-              ]))),
-    );
-  }
-}
+    final firebaseUser = context.watch<User?>();
 
-class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+    if (firebaseUser != null) {
+      return WelcomePage();
+    }
 
-  @override
-  State<WelcomePage> createState() => _WelcomePageState();
-}
-
-class _WelcomePageState extends State<WelcomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'SIGN UP',
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Dashboard',
-              style: TextStyle(fontSize: 20),
-            ),
-            backgroundColor: Colors.deepOrange,
-          ),
-          body: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 80, 15, 15),
-              child: GridView.count(
-                  primary: false,
-                  padding: const EdgeInsets.all(15),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 2,
-                  children: <Widget>[
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AddFriendsPage()));
-                        },
-                        icon: Icon(Icons.person_add, size: 50),
-                        label: Text("Add Friends"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        )),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => GamesPage()));
-                        },
-                        icon: Icon(Icons.emoji_events_outlined, size: 50),
-                        label: Text("Games"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        )),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ChatsPage()));
-                        },
-                        icon:
-                            Icon(Icons.chat_bubble_outline_outlined, size: 50),
-                        label: Text("Chats"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        )),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FriendsPage()));
-                        },
-                        icon: Icon(Icons.people_alt, size: 50),
-                        label: Text("My Friends"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        )),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProfilePage()));
-                        },
-                        icon: Icon(Icons.person, size: 50),
-                        label: Text("Profile"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        )),
-                    ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => SettingsPage()));
-                        },
-                        icon: Icon(Icons.app_settings_alt_outlined, size: 50),
-                        label: Text("Settings"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.lightBlue,
-                        ))
-                  ])),
-          floatingActionButton: Container(
-              height: 50,
-              width: 100,
-              child: ElevatedButton(
-                child: const Text('Logout'),
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => MyApp()));
-                },
-              )),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        ));
+    return MyStatefulWidget();
   }
 }
