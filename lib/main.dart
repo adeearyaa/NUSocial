@@ -67,3 +67,46 @@ class AuthenticationWrapper extends StatelessWidget {
     return MyStatefulWidget();
   }
 }
+
+class UserObj {
+  String id;
+  String userName;
+  String name;
+  String course;
+  int year;
+  String bio;
+
+  UserObj(
+      {this.id = '',
+      required this.userName,
+      required this.name,
+      required this.course,
+      required this.year,
+      required this.bio});
+
+  Map<String, dynamic> toJson() => {
+        'id': this.id,
+        'userName': this.userName,
+        'name': this.name,
+        'course': this.course,
+        'year': this.year,
+        'bio': this.bio,
+      };
+
+  static UserObj fromJson(Map<String, dynamic> json) => UserObj(
+        id: json['id'],
+        userName: json['userName'],
+        name: json['name'],
+        course: json['course'],
+        year: json['year'],
+        bio: json['bio'],
+      );
+  static UserObj nullUser() => UserObj(
+        id: '-',
+        userName: '-',
+        name: 'User not Found',
+        course: '-',
+        year: -1,
+        bio: '-',
+      );
+}

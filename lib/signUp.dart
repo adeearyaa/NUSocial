@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/authentication.dart';
+import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/homePage.dart';
 import 'package:nus_social/signInPage.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +11,6 @@ import 'authentication.dart';
 import 'main.dart';
 import 'signInPage.dart';
 import 'homePage.dart';
-
-
-
-
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -100,13 +97,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: ElevatedButton(
                       child: const Text('Confirm account'),
                       onPressed: () {
-                        FirebaseAuth.instance.createUserWithEmailAndPassword(email: newid.text, password: newpassword.text)
-                        .then((value) {
+                        FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: newid.text, password: newpassword.text)
+                            .then((value) {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => WelcomePage()));
+                              builder: (context) => CreateProfile()));
                         }).onError((error, stackTrace) {
                           print("Error ${error.toString()}");
-                        }); 
+                        });
                       },
                     )),
               ]))),
