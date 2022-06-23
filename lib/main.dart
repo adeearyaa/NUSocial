@@ -101,6 +101,7 @@ class UserObj {
         year: json['year'],
         bio: json['bio'],
       );
+
   static UserObj nullUser() => UserObj(
         id: '-',
         userName: '-',
@@ -109,4 +110,29 @@ class UserObj {
         year: -1,
         bio: '-',
       );
+}
+
+Widget loadingScreen(BuildContext context) {
+  return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            title: const Text('Loading...'),
+            backgroundColor: Colors.deepOrange,
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const Center(
+                  child: Text(
+                "Loading...",
+                style: TextStyle(fontSize: 25),
+              )),
+              const SizedBox(
+                height: 200.0,
+                width: 200.0,
+                child: CircularProgressIndicator(),
+              ),
+            ],
+          )));
 }

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/authentication.dart';
@@ -12,7 +10,6 @@ import 'chats.dart';
 import 'friends.dart';
 import 'games.dart';
 import 'main.dart';
-
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -45,8 +42,8 @@ class _WelcomePageState extends State<WelcomePage> {
                   children: <Widget>[
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => AddFriendsPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddFriendsPage()));
                         },
                         icon: Icon(Icons.person_add, size: 50),
                         label: Text("Add Friends"),
@@ -55,8 +52,8 @@ class _WelcomePageState extends State<WelcomePage> {
                         )),
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => GamesPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => GamesPage()));
                         },
                         icon: Icon(Icons.emoji_events_outlined, size: 50),
                         label: Text("Games"),
@@ -65,19 +62,19 @@ class _WelcomePageState extends State<WelcomePage> {
                         )),
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => ChatsPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ChatsPage()));
                         },
                         icon:
-                        Icon(Icons.chat_bubble_outline_outlined, size: 50),
+                            Icon(Icons.chat_bubble_outline_outlined, size: 50),
                         label: Text("Chats"),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.lightBlue,
                         )),
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => FriendsPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => FriendsPage()));
                         },
                         icon: Icon(Icons.people_alt, size: 50),
                         label: Text("My Friends"),
@@ -86,8 +83,8 @@ class _WelcomePageState extends State<WelcomePage> {
                         )),
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => ProfilePage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProfilePageWidget()));
                         },
                         icon: Icon(Icons.person, size: 50),
                         label: Text("Profile"),
@@ -96,8 +93,8 @@ class _WelcomePageState extends State<WelcomePage> {
                         )),
                     ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => SettingsPage()));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => SettingsPage()));
                         },
                         icon: Icon(Icons.app_settings_alt_outlined, size: 50),
                         label: Text("Settings"),
@@ -115,7 +112,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 },
               )),
           floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat,
+              FloatingActionButtonLocation.centerFloat,
         ));
   }
 }

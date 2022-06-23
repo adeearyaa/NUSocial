@@ -15,18 +15,54 @@ import 'authentication.dart';
 import 'signInPage.dart';
 import 'homePage.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfilePageWidget extends StatefulWidget {
+  const ProfilePageWidget({Key? key}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePageWidget> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePageWidget> {
+  UserObj userObj = UserObj.nullUser();
+
+  void updateProfile() {
+    userObj = findUser();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    UserObj userObj = findUser();
+    final userRef = FirebaseAuth.instance.currentUser;
+    if (userRef == null) {
+      return profileDetails(context, UserObj.nullUser());
+    }
 
+    return FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('usersInfo')
+            .doc(userRef.uid)
+            .get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return profileDetails(context, UserObj.nullUser());
+          }
+
+          if (snapshot.hasData && !snapshot.data!.exists) {
+            return profileDetails(context, UserObj.nullUser());
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+            return profileDetails(context, UserObj.fromJson(data));
+          }
+
+          return loadingScreen(context);
+        });
+  }
+
+  Widget profileDetails(BuildContext context, UserObj userObj) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Profile'),
@@ -46,23 +82,23 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           ListTile(
             leading: const Icon(Icons.email_outlined),
-            title: Text(userObj.userName),
+            title: Text('Username: ' + userObj.userName),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: Text(userObj.name),
+            title: Text('Displayname: ' + userObj.name),
           ),
           ListTile(
             leading: const Icon(Icons.book_outlined),
-            title: Text(userObj.course),
+            title: Text('Course: ' + userObj.course),
           ),
           ListTile(
             leading: const Icon(Icons.numbers_outlined),
-            title: Text(userObj.year.toString()),
+            title: Text('Year of Study: ' + userObj.year.toString()),
           ),
           ListTile(
             leading: const Icon(Icons.menu_book_outlined),
-            title: Text(userObj.bio),
+            title: Text('Bio: ' + userObj.bio),
           ),
           Container(
             height: 50,
@@ -78,38 +114,37 @@ class _ProfilePageState extends State<ProfilePage> {
       )),
     );
   }
+}
 
-  Stream<List<UserObj>> readUsers() => FirebaseFirestore.instance
-      .collection('usersInfo')
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => UserObj.fromJson(doc.data())).toList());
+Stream<List<UserObj>> readUsers() => FirebaseFirestore.instance
+    .collection('usersInfo')
+    .snapshots()
+    .map((snapshot) =>
+        snapshot.docs.map((doc) => UserObj.fromJson(doc.data())).toList());
 
-  UserObj findUser() {
-    final userRef = FirebaseAuth.instance.currentUser;
+UserObj findUser() {
+  final userRef = FirebaseAuth.instance.currentUser;
 
-    if (userRef != null) {
-      final userID = userRef.uid;
-      print(userID);
-
-      FirebaseFirestore.instance
-          .collection('usersInfo')
-          .doc(userID)
-          .get()
-          .then((DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Map<String, dynamic>? data = documentSnapshot.data();
-          if (data != null) {
-            return UserObj.fromJson(data);
-          } else {
-            return UserObj.nullUser();
-          }
+  if (userRef != null) {
+    final userID = userRef.uid;
+    FirebaseFirestore.instance
+        .collection('usersInfo')
+        .doc(userID)
+        .get()
+        .then((DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic>? data = documentSnapshot.data();
+        if (data != null) {
+          print('User Found');
+          return UserObj.fromJson(data);
         } else {
           return UserObj.nullUser();
         }
-      });
-    }
-
-    return UserObj.nullUser();
+      } else {
+        return UserObj.nullUser();
+      }
+    });
   }
+
+  return UserObj.nullUser();
 }
