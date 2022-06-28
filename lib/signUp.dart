@@ -102,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 email: newid.text, password: newpassword.text)
                             .then((value) {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CreateProfile()));
+                              builder: (context) => CreateProfileWidget()));
                         }).onError((error, stackTrace) {
                           print("Error ${error.toString()}");
                         });

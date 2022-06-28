@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/src/material/color_scheme.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io' as io;
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
@@ -26,7 +37,7 @@ class _ProfilePageState extends State<ProfilePageWidget> {
   UserObj userObj = UserObj.nullUser();
 
   void updateProfile() {
-    userObj = findUser();
+    userObj = UserObj.findUser();
     setState(() {});
   }
 
@@ -71,8 +82,8 @@ class _ProfilePageState extends State<ProfilePageWidget> {
           IconButton(
             icon: const Icon(Icons.create_outlined),
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CreateProfile()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CreateProfileWidget()));
             },
           )
         ],
@@ -80,6 +91,7 @@ class _ProfilePageState extends State<ProfilePageWidget> {
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
+          profileImgPreview(context, userObj.imgName),
           ListTile(
             leading: const Icon(Icons.email_outlined),
             title: Text('Username: ' + userObj.userName),
@@ -122,29 +134,37 @@ Stream<List<UserObj>> readUsers() => FirebaseFirestore.instance
     .map((snapshot) =>
         snapshot.docs.map((doc) => UserObj.fromJson(doc.data())).toList());
 
-UserObj findUser() {
-  final userRef = FirebaseAuth.instance.currentUser;
+Future profileImgGetter(String imgName) async {
+  final ref = FirebaseStorage.instance.ref().child('profileImages/$imgName');
+  String url = await ref.getDownloadURL();
+  return url;
+}
 
-  if (userRef != null) {
-    final userID = userRef.uid;
-    FirebaseFirestore.instance
-        .collection('usersInfo')
-        .doc(userID)
-        .get()
-        .then((DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-      if (documentSnapshot.exists) {
-        Map<String, dynamic>? data = documentSnapshot.data();
-        if (data != null) {
-          print('User Found');
-          return UserObj.fromJson(data);
-        } else {
-          return UserObj.nullUser();
+Widget profileImgPreview(BuildContext context, String imgName) {
+  return FutureBuilder(
+      future: profileImgGetter(imgName),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+          return CircleAvatar(
+            foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
+            radius: 100,
+          );
         }
-      } else {
-        return UserObj.nullUser();
-      }
-    });
-  }
 
-  return UserObj.nullUser();
+        if (snapshot.hasData &&
+            snapshot.connectionState == ConnectionState.done) {
+          String? url = snapshot.data;
+          if (url != null) {
+            return CircleAvatar(
+              foregroundImage: NetworkImage(url),
+              radius: 100,
+            );
+          }
+        }
+
+        return CircleAvatar(
+          foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
+          radius: 100,
+        );
+      });
 }

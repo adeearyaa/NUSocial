@@ -6,6 +6,7 @@ import 'package:nus_social/signInPage.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'authentication.dart';
 import 'signInPage.dart';
 import 'homePage.dart';
@@ -75,14 +76,17 @@ class UserObj {
   String course;
   int year;
   String bio;
+  String imgName;
 
-  UserObj(
-      {this.id = '',
-      required this.userName,
-      required this.name,
-      required this.course,
-      required this.year,
-      required this.bio});
+  UserObj({
+    this.id = '',
+    required this.userName,
+    required this.name,
+    required this.course,
+    required this.year,
+    required this.bio,
+    required this.imgName,
+  });
 
   Map<String, dynamic> toJson() => {
         'id': this.id,
@@ -91,6 +95,7 @@ class UserObj {
         'course': this.course,
         'year': this.year,
         'bio': this.bio,
+        'imgName': this.imgName,
       };
 
   static UserObj fromJson(Map<String, dynamic> json) => UserObj(
@@ -100,16 +105,44 @@ class UserObj {
         course: json['course'],
         year: json['year'],
         bio: json['bio'],
+        imgName: json['imgName'],
       );
 
   static UserObj nullUser() => UserObj(
-        id: '-',
-        userName: '-',
-        name: 'User not Found',
-        course: '-',
-        year: -1,
-        bio: '-',
-      );
+      id: '-',
+      userName: '-',
+      name: 'User not Found',
+      course: '-',
+      year: -1,
+      bio: '-',
+      imgName: '-');
+
+  static UserObj findUser() {
+    final userRef = FirebaseAuth.instance.currentUser;
+
+    if (userRef != null) {
+      final userID = userRef.uid;
+      FirebaseFirestore.instance
+          .collection('usersInfo')
+          .doc(userID)
+          .get()
+          .then((DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
+        if (documentSnapshot.exists) {
+          Map<String, dynamic>? data = documentSnapshot.data();
+          if (data != null) {
+            print('User Found');
+            return UserObj.fromJson(data);
+          } else {
+            return UserObj.nullUser();
+          }
+        } else {
+          return UserObj.nullUser();
+        }
+      });
+    }
+
+    return UserObj.nullUser();
+  }
 }
 
 Widget loadingScreen(BuildContext context) {
