@@ -28,37 +28,6 @@ class ChatsPage extends StatelessWidget {
         ],
       ),
       body: ConvPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 2,
-        selectedItemColor: Colors.lightBlue,
-        unselectedItemColor: Colors.blueGrey,
-        selectedLabelStyle: TextStyle(fontSize: 12),
-        unselectedLabelStyle: TextStyle(fontSize: 12),
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_customize_outlined, size: 20),
-            label: "Dashboard",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events_outlined, size: 20),
-            label: "Games",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline_outlined, size: 20),
-            label: "Chats",
-          ),
-        ],
-        onTap: (value) {
-          if (value == 0)
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => WelcomePage()));
-          if (value == 1)
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => GamesPage()));
-          if (value == 2) ;
-        },
-      ),
     );
   }
 }

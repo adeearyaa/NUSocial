@@ -36,79 +36,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             backgroundColor: Colors.deepOrange,
           ),
-          body: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    IconButton(
+          body: SingleChildScrollView(
+            child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MyApp()));
+                          },
+                          icon: Icon(Icons.arrow_back))
+                    ],
+                  ),
+                  Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(10),
+                      child: const Text(
+                        'NEW ACCOUNT',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 30),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: TextField(
+                      controller: newid,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Choose a new username',
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: TextField(
+                      obscureText: true,
+                      controller: newpassword,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'New Password',
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    child: TextField(
+                      obscureText: true,
+                      controller: secondpassword,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Confirm Password',
+                      ),
+                    ),
+                  ),
+                  Container(
+                      height: 50,
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                      child: ElevatedButton(
+                        child: const Text('Confirm account'),
                         onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => MyApp()));
+                          FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: newid.text, password: newpassword.text)
+                              .then((value) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => CreateProfileWidget()));
+                          }).onError((error, stackTrace) {
+                            print("Error ${error.toString()}");
+                          });
                         },
-                        icon: Icon(Icons.arrow_back))
-                  ],
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'NEW ACCOUNT',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 30),
-                    )),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  child: TextField(
-                    controller: newid,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Choose a new username',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: TextField(
-                    obscureText: true,
-                    controller: newpassword,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'New Password',
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: TextField(
-                    obscureText: true,
-                    controller: secondpassword,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Confirm Password',
-                    ),
-                  ),
-                ),
-                Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Confirm account'),
-                      onPressed: () {
-                        FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: newid.text, password: newpassword.text)
-                            .then((value) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => CreateProfileWidget()));
-                        }).onError((error, stackTrace) {
-                          print("Error ${error.toString()}");
-                        });
-                      },
-                    )),
-              ]))),
+                      )),
+                ])),
+          )),
     );
   }
 }

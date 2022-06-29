@@ -24,13 +24,6 @@ class _WelcomePageState extends State<WelcomePage> {
     return MaterialApp(
         title: 'SIGN UP',
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'DASHBOARD',
-              style: TextStyle(fontSize: 20),
-            ),
-            backgroundColor: Colors.deepOrange,
-          ),
           body: Padding(
               padding: const EdgeInsets.fromLTRB(15, 80, 15, 15),
               child: GridView.count(
