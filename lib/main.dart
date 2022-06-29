@@ -1,4 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/src/material/color_scheme.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io' as io;
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/homePage.dart';
@@ -62,7 +74,7 @@ class AuthenticationWrapper extends StatelessWidget {
     final firebaseUser = context.watch<User?>();
 
     if (firebaseUser != null) {
-      return WelcomePage();
+      return HomePage();
     }
 
     return MyStatefulWidget();
@@ -88,6 +100,7 @@ class UserObj {
     required this.imgName,
   });
 
+  //Converts user object to json file to store in firebase collections.
   Map<String, dynamic> toJson() => {
         'id': this.id,
         'userName': this.userName,
@@ -97,25 +110,38 @@ class UserObj {
         'bio': this.bio,
         'imgName': this.imgName,
       };
+  //Converts json from firebase collections to user object.
+  static UserObj fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return UserObj.nullUser();
+    }
 
-  static UserObj fromJson(Map<String, dynamic> json) => UserObj(
-        id: json['id'],
-        userName: json['userName'],
-        name: json['name'],
-        course: json['course'],
-        year: json['year'],
-        bio: json['bio'],
-        imgName: json['imgName'],
-      );
+    return UserObj(
+      id: json['id'],
+      userName: json['userName'],
+      name: json['name'],
+      course: json['course'],
+      year: json['year'],
+      bio: json['bio'],
+      imgName: json['imgName'],
+    );
+  }
 
+  //Empty user object.
   static UserObj nullUser() => UserObj(
-      id: '-',
-      userName: '-',
-      name: 'User not Found',
+      id: '',
+      userName: '',
+      name: '',
       course: '-',
-      year: -1,
-      bio: '-',
-      imgName: '-');
+      year: 0,
+      bio: '',
+      imgName: '');
+
+  //Empty map with an empty user object and a default avatar picture.
+  static Map<String, dynamic> emptyMap() => {
+        'user': UserObj.nullUser(),
+        'image': AssetImage('assets/images/avatar_blank.jpg')
+      };
 
   static UserObj findUser() {
     final userRef = FirebaseAuth.instance.currentUser;
@@ -143,8 +169,29 @@ class UserObj {
 
     return UserObj.nullUser();
   }
+
+  //Retrives user object and profile asynchronously picture and stores it in a map.
+  static Future<Map<String, dynamic>> retrieveUserData() async {
+    final userRef = FirebaseAuth.instance.currentUser;
+    if (userRef == null) {
+      return UserObj.emptyMap();
+    }
+
+    UserObj user = await FirebaseFirestore.instance
+        .collection('usersInfo')
+        .doc(userRef.uid)
+        .get()
+        .then((mapSnapshot) => UserObj.fromJson(mapSnapshot.data()));
+
+    String imgName = user.imgName;
+    final imgRef =
+        FirebaseStorage.instance.ref().child('profileImages/$imgName');
+    String imgUrl = await imgRef.getDownloadURL();
+    return {'user': user, 'image': NetworkImage(imgUrl)};
+  }
 }
 
+//Dummy loading screen.
 Widget loadingScreen(BuildContext context) {
   return MaterialApp(
       home: Scaffold(

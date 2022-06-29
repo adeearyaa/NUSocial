@@ -26,54 +26,45 @@ import 'authentication.dart';
 import 'signInPage.dart';
 import 'homePage.dart';
 
-class ProfilePageWidget extends StatefulWidget {
-  const ProfilePageWidget({Key? key}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<ProfilePageWidget> createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePageWidget> {
-  UserObj userObj = UserObj.nullUser();
-
+class _ProfilePageState extends State<ProfilePage> {
   void updateProfile() {
-    userObj = UserObj.findUser();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final userRef = FirebaseAuth.instance.currentUser;
-    if (userRef == null) {
-      return profileDetails(context, UserObj.nullUser());
-    }
-
     return FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('usersInfo')
-            .doc(userRef.uid)
-            .get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        future: UserObj.retrieveUserData(),
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasError) {
-            return profileDetails(context, UserObj.nullUser());
+            return profileDetailsWidget(context, UserObj.emptyMap());
           }
 
-          if (snapshot.hasData && !snapshot.data!.exists) {
-            return profileDetails(context, UserObj.nullUser());
+          if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasData) {
+            return profileDetailsWidget(context, UserObj.emptyMap());
           }
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            return profileDetails(context, UserObj.fromJson(data));
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            return profileDetailsWidget(context, snapshot.data!);
           }
 
           return loadingScreen(context);
         });
   }
 
-  Widget profileDetails(BuildContext context, UserObj userObj) {
+  Widget profileDetailsWidget(BuildContext context, Map<String, dynamic> map) {
+    UserObj user = map['user'];
+    ImageProvider image = map['image'];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Profile'),
@@ -91,26 +82,29 @@ class _ProfilePageState extends State<ProfilePageWidget> {
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
-          profileImgPreview(context, userObj.imgName),
+          CircleAvatar(
+            foregroundImage: image,
+            radius: 100,
+          ),
           ListTile(
             leading: const Icon(Icons.email_outlined),
-            title: Text('Username: ' + userObj.userName),
+            title: Text('Username: ' + user.userName),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: Text('Displayname: ' + userObj.name),
+            title: Text('Displayname: ' + user.name),
           ),
           ListTile(
             leading: const Icon(Icons.book_outlined),
-            title: Text('Course: ' + userObj.course),
+            title: Text('Course: ' + user.course),
           ),
           ListTile(
             leading: const Icon(Icons.numbers_outlined),
-            title: Text('Year of Study: ' + userObj.year.toString()),
+            title: Text('Year of Study: ' + user.year.toString()),
           ),
           ListTile(
             leading: const Icon(Icons.menu_book_outlined),
-            title: Text('Bio: ' + userObj.bio),
+            title: Text('Bio: ' + user.bio),
           ),
           Container(
             height: 50,
@@ -138,33 +132,4 @@ Future profileImgGetter(String imgName) async {
   final ref = FirebaseStorage.instance.ref().child('profileImages/$imgName');
   String url = await ref.getDownloadURL();
   return url;
-}
-
-Widget profileImgPreview(BuildContext context, String imgName) {
-  return FutureBuilder(
-      future: profileImgGetter(imgName),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) {
-          return CircleAvatar(
-            foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
-            radius: 100,
-          );
-        }
-
-        if (snapshot.hasData &&
-            snapshot.connectionState == ConnectionState.done) {
-          String? url = snapshot.data;
-          if (url != null) {
-            return CircleAvatar(
-              foregroundImage: NetworkImage(url),
-              radius: 100,
-            );
-          }
-        }
-
-        return CircleAvatar(
-          foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
-          radius: 100,
-        );
-      });
 }

@@ -14,6 +14,7 @@ import 'package:nus_social/authentication.dart';
 import 'package:nus_social/homePage.dart';
 import 'package:nus_social/signInPage.dart';
 import 'package:nus_social/main.dart';
+import 'package:nus_social/profile.dart';
 import 'authentication.dart';
 import 'signInPage.dart';
 import 'homePage.dart';
@@ -27,40 +28,31 @@ class CreateProfileWidget extends StatefulWidget {
 
 class _CreateProfileState extends State<CreateProfileWidget> {
   PlatformFile? pickedImg;
+  String imgName = 'avatar_blank.jpg';
 
   TextEditingController nameController = TextEditingController();
   TextEditingController courseController = TextEditingController();
   TextEditingController yearController = TextEditingController();
   TextEditingController bioController = TextEditingController();
 
-  String? imgName;
-
   @override
   Widget build(BuildContext context) {
-    final userRef = FirebaseAuth.instance.currentUser;
-    if (userRef == null) {
-      return profileCreationWidget(context, UserObj.nullUser());
-    }
-
     return FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection('usersInfo')
-            .doc(userRef.uid)
-            .get(),
-        builder:
-            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        future: UserObj.retrieveUserData(),
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasError) {
-            return profileCreationWidget(context, UserObj.nullUser());
+            return profileCreationWidget(context, UserObj.emptyMap());
           }
 
-          if (snapshot.hasData && !snapshot.data!.exists) {
-            return profileCreationWidget(context, UserObj.nullUser());
+          if (snapshot.connectionState == ConnectionState.done &&
+              !snapshot.hasData) {
+            return profileCreationWidget(context, UserObj.emptyMap());
           }
 
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            return profileCreationWidget(context, UserObj.fromJson(data));
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            return profileCreationWidget(context, snapshot.data!);
           }
 
           return loadingScreen(context);
@@ -68,7 +60,7 @@ class _CreateProfileState extends State<CreateProfileWidget> {
   }
 
   Future createUserProfile(
-      String name, String course, int year, String bio, String imgName) async {
+      String name, String course, int year, String bio) async {
     final userRef = FirebaseAuth.instance.currentUser;
 
     if (userRef != null) {
@@ -92,49 +84,6 @@ class _CreateProfileState extends State<CreateProfileWidget> {
     }
   }
 
-  Widget profileImgPreview(BuildContext context, String imgName) {
-    if (pickedImg == null) {
-      return FutureBuilder(
-          future: profileImgGetter(imgName),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return CircleAvatar(
-                foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
-                radius: 100,
-              );
-            }
-
-            if (snapshot.hasData &&
-                snapshot.connectionState == ConnectionState.done) {
-              String? url = snapshot.data;
-              if (url != null) {
-                this.imgName = imgName;
-                return CircleAvatar(
-                  foregroundImage: NetworkImage(url),
-                  radius: 100,
-                );
-              }
-            }
-
-            return CircleAvatar(
-              foregroundImage: AssetImage('assets/images/avatar_blank.jpg'),
-              radius: 100,
-            );
-          });
-    }
-
-    return CircleAvatar(
-      foregroundImage: FileImage(io.File(pickedImg!.path!)),
-      radius: 100,
-    );
-  }
-
-  Future profileImgGetter(String imgName) async {
-    final ref = FirebaseStorage.instance.ref().child('profileImages/$imgName');
-    String url = await ref.getDownloadURL();
-    return url;
-  }
-
   Future selectImg() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -151,7 +100,6 @@ class _CreateProfileState extends State<CreateProfileWidget> {
   Future uploadImg() async {
     PlatformFile? img = pickedImg;
 
-    print('Image attempt at uploading');
     if (img != null) {
       String? imgPath = img.path;
       if (imgPath != null) {
@@ -163,7 +111,9 @@ class _CreateProfileState extends State<CreateProfileWidget> {
     }
   }
 
-  Widget profileCreationWidget(BuildContext context, UserObj user) {
+  Widget profileCreationWidget(BuildContext context, Map<String, dynamic> map) {
+    UserObj user = map['user'];
+
     nameController.text = user.name;
     courseController.text = user.course;
     yearController.text = user.year.toString();
@@ -177,7 +127,7 @@ class _CreateProfileState extends State<CreateProfileWidget> {
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
-          profileImgPreview(context, user.imgName),
+          profileImgPreview(context, map),
           Container(
             height: 50,
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
@@ -241,21 +191,30 @@ class _CreateProfileState extends State<CreateProfileWidget> {
                 final course = courseController.text;
                 final int year = int.parse(yearController.text);
                 final bio = bioController.text;
-                final imageName = imgName;
 
-                if (imageName != null) {
-                  createUserProfile(name, course, year, bio, imageName);
-                } else {
-                  createUserProfile(name, course, year, bio, '-');
-                }
+                createUserProfile(name, course, year, bio);
 
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const WelcomePage()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfilePage()));
               },
             ),
           ),
         ],
       )),
+    );
+  }
+
+  Widget profileImgPreview(BuildContext context, Map<String, dynamic> map) {
+    if (pickedImg == null) {
+      return CircleAvatar(
+        foregroundImage: map['image'],
+        radius: 100,
+      );
+    }
+
+    return CircleAvatar(
+      foregroundImage: FileImage(io.File(pickedImg!.path!)),
+      radius: 100,
     );
   }
 }

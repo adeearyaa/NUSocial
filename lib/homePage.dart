@@ -11,14 +11,14 @@ import 'friends.dart';
 import 'games.dart';
 import 'main.dart';
 
-class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<WelcomePage> createState() => _WelcomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -77,7 +77,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     ElevatedButton.icon(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProfilePageWidget()));
+                              builder: (context) => ProfilePage()));
                         },
                         icon: Icon(Icons.person, size: 50),
                         label: Text("Profile"),
