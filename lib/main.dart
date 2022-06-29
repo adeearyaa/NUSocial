@@ -10,18 +10,18 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/src/material/color_scheme.dart';
+import 'package:nus_social/addFriends.dart';
 import 'package:nus_social/authentication.dart';
+import 'package:nus_social/chats.dart';
+import 'package:nus_social/create_profile.dart';
+import 'package:nus_social/friends.dart';
+import 'package:nus_social/games.dart';
 import 'package:nus_social/homePage.dart';
+import 'package:nus_social/main.dart';
+import 'package:nus_social/profile.dart';
+import 'package:nus_social/settings.dart';
 import 'package:nus_social/signInPage.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'authentication.dart';
-import 'signInPage.dart';
-import 'homePage.dart';
+import 'package:nus_social/signUp.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,6 +89,8 @@ class UserObj {
   int year;
   String bio;
   String imgName;
+  static const ImageProvider emptyAvatarImage =
+      AssetImage('assets/images/avatar_blank.jpg');
 
   UserObj({
     this.id = '',
@@ -140,7 +142,7 @@ class UserObj {
   //Empty map with an empty user object and a default avatar picture.
   static Map<String, dynamic> emptyMap() => {
         'user': UserObj.nullUser(),
-        'image': AssetImage('assets/images/avatar_blank.jpg')
+        'image': UserObj.emptyAvatarImage,
       };
 
   static UserObj findUser() {
@@ -188,6 +190,14 @@ class UserObj {
         FirebaseStorage.instance.ref().child('profileImages/$imgName');
     String imgUrl = await imgRef.getDownloadURL();
     return {'user': user, 'image': NetworkImage(imgUrl)};
+  }
+
+  //Retrives user profile image only using the image name.
+  static Future<ImageProvider> retrieveUserImage(String imgName) async {
+    final imgRef =
+        FirebaseStorage.instance.ref().child('profileImages/$imgName');
+    String imgUrl = await imgRef.getDownloadURL();
+    return NetworkImage(imgUrl);
   }
 }
 

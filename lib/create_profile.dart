@@ -10,14 +10,18 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'package:nus_social/addFriends.dart';
 import 'package:nus_social/authentication.dart';
+import 'package:nus_social/chats.dart';
+import 'package:nus_social/create_profile.dart';
+import 'package:nus_social/friends.dart';
+import 'package:nus_social/games.dart';
 import 'package:nus_social/homePage.dart';
-import 'package:nus_social/signInPage.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
-import 'authentication.dart';
-import 'signInPage.dart';
-import 'homePage.dart';
+import 'package:nus_social/settings.dart';
+import 'package:nus_social/signInPage.dart';
+import 'package:nus_social/signUp.dart';
 
 class CreateProfileWidget extends StatefulWidget {
   const CreateProfileWidget({Key? key}) : super(key: key);
