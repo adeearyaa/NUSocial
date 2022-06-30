@@ -41,8 +41,9 @@ class _CreateProfileState extends State<CreateProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final userRef = FirebaseAuth.instance.currentUser;
     return FutureBuilder(
-        future: UserObj.retrieveUserData(),
+        future: UserObj.retrieveUserData(userRef!.uid),
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasError) {

@@ -37,8 +37,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userRef = FirebaseAuth.instance.currentUser;
     return FutureBuilder(
-        future: UserObj.retrieveUserData(),
+        future: UserObj.retrieveUserData(userRef!.uid),
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
           if (snapshot.hasError) {
@@ -79,6 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
           child: Column(
         children: <Widget>[
+          const SizedBox(
+            height: 20,
+          ),
           CircleAvatar(
             foregroundImage: image,
             radius: 100,
@@ -117,16 +121,4 @@ class _ProfilePageState extends State<ProfilePage> {
       )),
     );
   }
-}
-
-Stream<List<UserObj>> readUsers() => FirebaseFirestore.instance
-    .collection('usersInfo')
-    .snapshots()
-    .map((snapshot) =>
-        snapshot.docs.map((doc) => UserObj.fromJson(doc.data())).toList());
-
-Future profileImgGetter(String imgName) async {
-  final ref = FirebaseStorage.instance.ref().child('profileImages/$imgName');
-  String url = await ref.getDownloadURL();
-  return url;
 }

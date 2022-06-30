@@ -173,18 +173,12 @@ class UserObj {
   }
 
   //Retrives user object and profile asynchronously picture and stores it in a map.
-  static Future<Map<String, dynamic>> retrieveUserData() async {
-    final userRef = FirebaseAuth.instance.currentUser;
-    if (userRef == null) {
-      return UserObj.emptyMap();
-    }
-
+  static Future<Map<String, dynamic>> retrieveUserData(String userId) async {
     UserObj user = await FirebaseFirestore.instance
         .collection('usersInfo')
-        .doc(userRef.uid)
+        .doc(userId)
         .get()
         .then((mapSnapshot) => UserObj.fromJson(mapSnapshot.data()));
-
     String imgName = user.imgName;
     final imgRef =
         FirebaseStorage.instance.ref().child('profileImages/$imgName');
@@ -199,6 +193,15 @@ class UserObj {
     String imgUrl = await imgRef.getDownloadURL();
     return NetworkImage(imgUrl);
   }
+
+  //Retrives user friends document on firestore.
+  static Future<Map<String, dynamic>> retrieveUserFriends(String userId) async {
+    final friendsDoc = await FirebaseFirestore.instance
+        .collection('usersFriends')
+        .doc(userId)
+        .get();
+    return friendsDoc.data()!;
+  }
 }
 
 //Dummy loading screen.
@@ -209,20 +212,9 @@ Widget loadingScreen(BuildContext context) {
             title: const Text('Loading...'),
             backgroundColor: Colors.deepOrange,
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const Center(
-                  child: Text(
-                "Loading...",
-                style: TextStyle(fontSize: 25),
-              )),
-              const SizedBox(
-                height: 200.0,
-                width: 200.0,
-                child: CircularProgressIndicator(),
-              ),
-            ],
+          body: const Center(
+            widthFactor: 10,
+            heightFactor: 10,
+            child: CircularProgressIndicator(),
           )));
 }
