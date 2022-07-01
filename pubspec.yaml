@@ -44,6 +44,8 @@ dependencies:
   firebase_core: ^1.17.1
   file_picker: ^3.0.4
   firebase_storage: ^10.2.18
+  grouped_list: ^5.1.2
+  intl: ^0.17.0
 
 
 

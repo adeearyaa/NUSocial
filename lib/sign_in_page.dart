@@ -10,27 +10,27 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:nus_social/addFriends.dart';
+import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/chats.dart';
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
-import 'package:nus_social/homePage.dart';
+import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
 import 'package:nus_social/settings.dart';
-import 'package:nus_social/signInPage.dart';
-import 'package:nus_social/signUp.dart';
+import 'package:nus_social/sign_in_page.dart';
+import 'package:nus_social/sign_up.dart';
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<SignInPage> createState() => _SignInPageState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _SignInPageState extends State<SignInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -98,6 +98,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   },
                 )),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text('Not a member?'),
                 TextButton(
@@ -106,12 +107,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const SignUpScreen()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => SignUpPage()));
                   },
                 )
               ],
-              mainAxisAlignment: MainAxisAlignment.center,
             ),
           ],
         ));

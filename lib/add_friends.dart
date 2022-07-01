@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/material/color_scheme.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,18 +9,19 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:nus_social/addFriends.dart';
+import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/chats.dart';
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
-import 'package:nus_social/homePage.dart';
+import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
 import 'package:nus_social/settings.dart';
-import 'package:nus_social/signInPage.dart';
-import 'package:nus_social/signUp.dart';
+import 'package:nus_social/sign_in_page.dart';
+import 'package:nus_social/sign_up.dart';
+import 'package:nus_social/user_class.dart';
 
 class AddFriendsPage extends StatefulWidget {
   const AddFriendsPage({Key? key}) : super(key: key);
@@ -80,8 +80,9 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
             (BuildContext context, AsyncSnapshot<List<UserObj>> usersSnapshot) {
           if (usersSnapshot.connectionState == ConnectionState.active) {
             if (!usersSnapshot.hasData) {
+              print('1');
               return Container(
-                child: const Text('Something went wrong, oops!'),
+                child: const Text('Something went wrong, oops! Error 1'),
               );
             }
             if (usersSnapshot.hasError) {
@@ -97,7 +98,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                 if (friendsSnapshot.connectionState == ConnectionState.done) {
                   if (!friendsSnapshot.hasData) {
                     return Container(
-                      child: const Text('Something went wrong, oops!'),
+                      child: const Text('Something went wrong, oops! Error 2'),
                     );
                   }
                   if (friendsSnapshot.hasError) {
@@ -107,12 +108,11 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                   }
                   List<dynamic>? rawList = friendsSnapshot.data!['friends'];
                   if (rawList != null) {
-                    List<String>? friendsList =
-                        List<String>.from(rawList as List);
+                    List<String>? friendsList = List<String>.from(rawList);
                     usersList
                         .removeWhere((user) => friendsList.contains(user.id));
                   }
-                  return searchBodyList(usersList: usersList);
+                  return SearchBodyList(usersList: usersList);
                 }
                 return loadingScreen(context);
               },
@@ -142,7 +142,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (!snapshot.hasData) {
             return Container(
-              child: const Text('Something went wrong, oops!'),
+              child: const Text('Something went wrong, oops! Error 3'),
             );
           }
           if (snapshot.hasError) {
@@ -158,7 +158,7 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
               itemCount: requestsList.length,
               itemBuilder: (BuildContext context, int index) {
                 String userId = requestsList[index];
-                return friendRequestCard(senderUserId: userId);
+                return FriendRequestCard(senderUserId: userId);
               },
             );
           }
@@ -173,29 +173,55 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   }
 }
 
-class searchBodyList extends StatefulWidget {
+class SearchBodyList extends StatefulWidget {
   final List<UserObj> usersList;
-  const searchBodyList({Key? key, required this.usersList}) : super(key: key);
+  const SearchBodyList({Key? key, required this.usersList}) : super(key: key);
   @override
-  State<searchBodyList> createState() => _searchBodyListState();
+  State<SearchBodyList> createState() => _SearchBodyListState();
 }
 
-class _searchBodyListState extends State<searchBodyList> {
+class _SearchBodyListState extends State<SearchBodyList> {
   String currUserId = FirebaseAuth.instance.currentUser!.uid;
   List<UserObj> filteredList = [];
+  late TextEditingController query;
 
-  initState() {
+  @override
+  void initState() {
     filteredList = widget.usersList;
     super.initState();
+    query = TextEditingController()
+      ..addListener(() {
+        runListFilter(query.text);
+      });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
-          onChanged: (value) => runListFilter(value),
-          decoration: const InputDecoration(
-              labelText: 'Search by name', suffixIcon: Icon(Icons.search)),
+        Row(
+          children: [
+            const SizedBox(
+              width: 5,
+            ),
+            Expanded(
+              child: TextField(
+                controller: query,
+                decoration: const InputDecoration(
+                    labelText: 'Search by name',
+                    suffixIcon: Icon(Icons.search)),
+              ),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                query.clear();
+              },
+              child: const Text('Cancel'),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+          ],
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -210,7 +236,7 @@ class _searchBodyListState extends State<searchBodyList> {
                 ListTile(
                     title: Text(user.course + ' Year ' + user.year.toString()),
                     subtitle: Text(user.bio),
-                    trailing: sendRequestButton(
+                    trailing: SendRequestButton(
                         senderUserId: currUserId, recieverUserId: user.id)),
               ],
             );
@@ -255,17 +281,17 @@ class _searchBodyListState extends State<searchBodyList> {
   }
 }
 
-class sendRequestButton extends StatefulWidget {
+class SendRequestButton extends StatefulWidget {
   final String senderUserId;
   final String recieverUserId;
-  const sendRequestButton(
+  const SendRequestButton(
       {Key? key, required this.senderUserId, required this.recieverUserId})
       : super(key: key);
   @override
-  State<sendRequestButton> createState() => _sendRequestButtonState();
+  State<SendRequestButton> createState() => _SendRequestButtonState();
 }
 
-class _sendRequestButtonState extends State<sendRequestButton> {
+class _SendRequestButtonState extends State<SendRequestButton> {
   bool sent = false;
   @override
   Widget build(BuildContext context) {
@@ -318,15 +344,15 @@ class _sendRequestButtonState extends State<sendRequestButton> {
   }
 }
 
-class friendRequestCard extends StatefulWidget {
+class FriendRequestCard extends StatefulWidget {
   final String senderUserId;
-  const friendRequestCard({Key? key, required this.senderUserId})
+  const FriendRequestCard({Key? key, required this.senderUserId})
       : super(key: key);
   @override
-  State<friendRequestCard> createState() => _friendRequestCardState();
+  State<FriendRequestCard> createState() => _FriendRequestCardState();
 }
 
-class _friendRequestCardState extends State<friendRequestCard> {
+class _FriendRequestCardState extends State<FriendRequestCard> {
   String currUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
@@ -337,7 +363,7 @@ class _friendRequestCardState extends State<friendRequestCard> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (!snapshot.hasData) {
             return Container(
-              child: const Text('Something went wrong, oops!'),
+              child: const Text('Something went wrong, oops! Error 4'),
             );
           }
           if (snapshot.hasError) {
@@ -355,7 +381,7 @@ class _friendRequestCardState extends State<friendRequestCard> {
               ListTile(
                 title: Text(user.course + ' Year ' + user.year.toString()),
                 subtitle: Text(user.bio),
-                trailing: acceptRequestButton(
+                trailing: AcceptRequestButton(
                     senderUserId: widget.senderUserId,
                     recieverUserId: currUserId),
               ),
@@ -368,17 +394,17 @@ class _friendRequestCardState extends State<friendRequestCard> {
   }
 }
 
-class acceptRequestButton extends StatefulWidget {
+class AcceptRequestButton extends StatefulWidget {
   final String senderUserId;
   final String recieverUserId;
-  const acceptRequestButton(
+  const AcceptRequestButton(
       {Key? key, required this.senderUserId, required this.recieverUserId})
       : super(key: key);
   @override
-  State<acceptRequestButton> createState() => _acceptRequestButtonState();
+  State<AcceptRequestButton> createState() => _AcceptRequestButtonState();
 }
 
-class _acceptRequestButtonState extends State<acceptRequestButton> {
+class _AcceptRequestButtonState extends State<AcceptRequestButton> {
   bool accepted = false;
   @override
   Widget build(BuildContext context) {

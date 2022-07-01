@@ -10,18 +10,18 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:nus_social/addFriends.dart';
+import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/chats.dart';
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
-import 'package:nus_social/homePage.dart';
+import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
 import 'package:nus_social/settings.dart';
-import 'package:nus_social/signInPage.dart';
-import 'package:nus_social/signUp.dart';
+import 'package:nus_social/sign_in_page.dart';
+import 'package:nus_social/sign_up.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -31,9 +31,7 @@ class SettingsPage extends StatelessWidget {
         title: const Text('Settings'),
         backgroundColor: Colors.deepOrange,
       ),
-      body: Container(
-        child: Center(child: Text("Settings")),
-      ),
+      body: const Center(child: Text("Work in Progress...")),
     );
   }
 }

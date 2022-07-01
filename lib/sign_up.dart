@@ -10,27 +10,27 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:nus_social/addFriends.dart';
+import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/chats.dart';
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
-import 'package:nus_social/homePage.dart';
+import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
 import 'package:nus_social/settings.dart';
-import 'package:nus_social/signInPage.dart';
-import 'package:nus_social/signUp.dart';
+import 'package:nus_social/sign_in_page.dart';
+import 'package:nus_social/sign_up.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpPageState extends State<SignUpPage> {
   TextEditingController newid = TextEditingController();
   TextEditingController newpassword = TextEditingController();
   TextEditingController secondpassword = TextEditingController();
@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   email: newid.text, password: newpassword.text)
                               .then((value) {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => CreateProfileWidget()));
+                                builder: (context) => CreateProfilePage()));
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });

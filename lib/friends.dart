@@ -10,18 +10,19 @@ import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:nus_social/addFriends.dart';
+import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
 import 'package:nus_social/chats.dart';
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
-import 'package:nus_social/homePage.dart';
+import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
 import 'package:nus_social/settings.dart';
-import 'package:nus_social/signInPage.dart';
-import 'package:nus_social/signUp.dart';
+import 'package:nus_social/sign_in_page.dart';
+import 'package:nus_social/sign_up.dart';
+import 'package:nus_social/user_class.dart';
 
 class FriendsPage extends StatelessWidget {
   String currUserId = FirebaseAuth.instance.currentUser!.uid;
@@ -62,8 +63,14 @@ class FriendsPage extends StatelessWidget {
                     ),
                   );
                 }
-                return const Center(
-                  child: Text('You have no friends yet, go add some friends!'),
+                return Column(
+                  children: <Widget>[
+                    const SizedBox(height: 200),
+                    const Icon(Icons.person_add_alt_1_outlined, size: 200.0),
+                    const Center(
+                        child: Text(
+                            'You have no friends yet, go add some friends!')),
+                  ],
                 );
               }
               return Expanded(child: loadingScreen(context));
