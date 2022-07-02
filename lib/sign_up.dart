@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => MyApp()));
                           },
-                          icon: Icon(Icons.arrow_back))
+                          icon: const Icon(Icons.arrow_back))
                     ],
                   ),
                   Container(
@@ -77,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: newid,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Choose a new username',
+                        labelText: 'Enter your E-Mail address',
                       ),
                     ),
                   ),
@@ -88,7 +88,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       controller: newpassword,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'New Password',
+                        labelText: 'New Password (At least 6 characters)',
                       ),
                     ),
                   ),

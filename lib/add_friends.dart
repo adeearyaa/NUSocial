@@ -197,52 +197,56 @@ class _SearchBodyListState extends State<SearchBodyList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            const SizedBox(
-              width: 5,
-            ),
-            Expanded(
-              child: TextField(
-                controller: query,
-                decoration: const InputDecoration(
-                    labelText: 'Search by name',
-                    suffixIcon: Icon(Icons.search)),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const SizedBox(
+                width: 5,
               ),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                query.clear();
-              },
-              child: const Text('Cancel'),
-            ),
-            const SizedBox(
-              width: 5,
-            ),
-          ],
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: filteredList.length,
-          itemBuilder: (BuildContext context, int index) {
-            UserObj user = filteredList[index];
+              Expanded(
+                child: TextField(
+                  controller: query,
+                  decoration: const InputDecoration(
+                      labelText: 'Search by name',
+                      suffixIcon: Icon(Icons.search)),
+                ),
+              ),
+              OutlinedButton(
+                onPressed: () {
+                  query.clear();
+                },
+                child: const Text('Cancel'),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+            ],
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: filteredList.length,
+            itemBuilder: (BuildContext context, int index) {
+              UserObj user = filteredList[index];
 
-            return ExpansionTile(
-              leading: displayUserProfilePicture(context, user.imgName),
-              title: Text(user.name),
-              children: <Widget>[
-                ListTile(
-                    title: Text(user.course + ' Year ' + user.year.toString()),
-                    subtitle: Text(user.bio),
-                    trailing: SendRequestButton(
-                        senderUserId: currUserId, recieverUserId: user.id)),
-              ],
-            );
-          },
-        ),
-      ],
+              return ExpansionTile(
+                leading: displayUserProfilePicture(context, user.imgName),
+                title: Text(user.name),
+                children: <Widget>[
+                  ListTile(
+                      title:
+                          Text(user.course + ' Year ' + user.year.toString()),
+                      subtitle: Text(user.bio),
+                      trailing: SendRequestButton(
+                          senderUserId: currUserId, recieverUserId: user.id)),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

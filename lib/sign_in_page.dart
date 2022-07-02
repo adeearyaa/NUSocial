@@ -63,7 +63,7 @@ class _SignInPageState extends State<SignInPage> {
                 controller: emailController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'User Name',
+                  labelText: 'E-Mail',
                 ),
               ),
             ),
