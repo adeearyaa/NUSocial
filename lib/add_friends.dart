@@ -11,7 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
-import 'package:nus_social/chats.dart';
+
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';

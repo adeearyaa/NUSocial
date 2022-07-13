@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/material/color_scheme.dart';
+import 'package:nus_social/chatroom.dart';
+import 'package:nus_social/forgetpassword.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +14,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
-import 'package:nus_social/chats.dart';
+
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
 import 'package:nus_social/games.dart';
@@ -80,7 +82,8 @@ class _SignInPageState extends State<SignInPage> {
             ),
             TextButton(
               onPressed: () {
-                //forgot password screen
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => ChatRoom()));
               },
               child: const Text(
                 'Forgot Password',

@@ -81,7 +81,7 @@ class UserObj {
     String imgName = user.imgName;
     final imgRef =
         FirebaseStorage.instance.ref().child('profileImages/$imgName');
-    String imgUrl = await imgRef.getDownloadURL();
+    String? imgUrl = await imgRef.getDownloadURL();
     return {'user': user, 'image': NetworkImage(imgUrl)};
   }
 
