@@ -74,19 +74,18 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
   }
 
   Widget searchBody() {
-    return StreamBuilder<List<UserObj>>(
-        stream: getUsersList(),
+    return FutureBuilder(
+        future: getUsersList(),
         builder:
             (BuildContext context, AsyncSnapshot<List<UserObj>> usersSnapshot) {
-          if (usersSnapshot.connectionState == ConnectionState.active) {
+          if (usersSnapshot.connectionState == ConnectionState.done) {
             if (!usersSnapshot.hasData) {
-              print('1');
-              return Container(
-                child: const Text('Something went wrong, oops! Error 1'),
+              return const Center(
+                child: Text('Something went wrong, oops! Error 1'),
               );
             }
             if (usersSnapshot.hasError) {
-              return Container(
+              return Center(
                 child: Text(usersSnapshot.error.toString()),
               );
             }
@@ -97,12 +96,12 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
                   AsyncSnapshot<Map<String, dynamic>> friendsSnapshot) {
                 if (friendsSnapshot.connectionState == ConnectionState.done) {
                   if (!friendsSnapshot.hasData) {
-                    return Container(
-                      child: const Text('Something went wrong, oops! Error 2'),
+                    return const Center(
+                      child: Text('Something went wrong, oops! Error 2'),
                     );
                   }
                   if (friendsSnapshot.hasError) {
-                    return Container(
+                    return Center(
                       child: Text(friendsSnapshot.error.toString()),
                     );
                   }
@@ -122,15 +121,14 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
         });
   }
 
-  Stream<List<UserObj>> getUsersList() {
-    Stream<List<UserObj>> usersList = FirebaseFirestore.instance
-        .collection('usersInfo')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => UserObj.fromJson(doc.data()))
-            .where((user) => user.id != currUserId)
-            .toList());
-    return usersList;
+  Future<List<UserObj>> getUsersList() async {
+    QuerySnapshot<Map<String, dynamic>> usersList =
+        await FirebaseFirestore.instance.collection('usersInfo').get();
+    List<UserObj> list = usersList.docs
+        .map((doc) => UserObj.fromJson(doc.data()))
+        .where((user) => user.id != currUserId)
+        .toList();
+    return list;
   }
 
   Widget requestsBody() {
@@ -141,12 +139,12 @@ class _AddFriendsPageState extends State<AddFriendsPage> {
           (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (!snapshot.hasData) {
-            return Container(
-              child: const Text('Something went wrong, oops! Error 3'),
+            return const Center(
+              child: Text('Something went wrong, oops! Error 3'),
             );
           }
           if (snapshot.hasError) {
-            return Container(
+            return Center(
               child: Text(snapshot.error.toString()),
             );
           }
@@ -366,12 +364,12 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
           (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (!snapshot.hasData) {
-            return Container(
-              child: const Text('Something went wrong, oops! Error 4'),
+            return const Center(
+              child: Text('Something went wrong, oops! Error 4'),
             );
           }
           if (snapshot.hasError) {
-            return Container(
+            return Center(
               child: Text(snapshot.error.toString()),
             );
           }
