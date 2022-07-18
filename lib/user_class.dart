@@ -63,7 +63,7 @@ class UserObj {
       course: '-',
       year: 0,
       bio: '',
-      imgName: '');
+      imgName: 'avatar_blank.jpg');
 
   //Empty map with an empty user object and a default avatar picture.
   static Map<String, dynamic> emptyMap() => {
@@ -79,10 +79,15 @@ class UserObj {
         .get()
         .then((mapSnapshot) => UserObj.fromJson(mapSnapshot.data()));
     String imgName = user.imgName;
-    final imgRef =
-        FirebaseStorage.instance.ref().child('profileImages/$imgName');
-    String? imgUrl = await imgRef.getDownloadURL();
-    return {'user': user, 'image': NetworkImage(imgUrl)};
+    try {
+      final imgRef =
+          FirebaseStorage.instance.ref().child('profileImages/$imgName');
+      String? imgUrl = await imgRef.getDownloadURL();
+      return {'user': user, 'image': NetworkImage(imgUrl)};
+    } catch (e) {
+      print(e);
+      return {'user': user, 'image': emptyAvatarImage};
+    }
   }
 
   //Retrives user profile image only using the image name.
