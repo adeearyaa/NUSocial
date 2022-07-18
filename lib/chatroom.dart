@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:nus_social/constants.dart';
 import 'package:nus_social/convoscreen.dart';
 import 'package:nus_social/database.dart';
 import 'package:nus_social/helperfuncts.dart';
 import 'package:nus_social/searchscreen.dart';
+import 'package:nus_social/user_class.dart';
 
 class ChatRoom extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Stream? chatRoomsStream;
 
@@ -23,15 +26,32 @@ class _ChatRoomState extends State<ChatRoom> {
             ? ListView.builder(
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
-                  return Constants.myName != null
-                      ? ChatRoomTile(
-                          snapshot.data.docs[index]
-                              .data()["chatroomid"]
-                              .toString()
-                              .replaceAll("_", "")
-                              .replaceAll(Constants.myName, ""),
-                          snapshot.data.docs[index].data()["chatroomid"])
-                      : Container();
+                  String friendUserId = snapshot.data.docs[index]
+                      .data()["chatroomid"]
+                      .toString()
+                      .replaceAll("_", "")
+                      .replaceAll(currUserId, "");
+                  String id = snapshot.data.docs[index].data()["chatroomid"];
+                  return FutureBuilder(
+                      future: UserObj.retrieveUserData(friendUserId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (!snapshot.hasData) {
+                            return Container(
+                              child: Text('Something went wrong, oops!'),
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return Container(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          }
+                          UserObj friend = snapshot.data!['user'];
+                          return ChatRoomTile(friend.name, id);
+                        }
+                        return Container();
+                      });
                 },
               )
             : Container();
@@ -47,7 +67,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   getUserInfo() async {
     print(Constants.myName);
-    databaseMethods.getChatRooms(Constants.myName).then((value) {
+    databaseMethods.getChatRooms(currUserId).then((value) {
       setState(() {
         chatRoomsStream = value;
       });

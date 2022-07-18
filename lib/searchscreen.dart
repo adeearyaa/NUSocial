@@ -17,11 +17,12 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
 
   createRoomAndConvo({required String username}) {
-    if (username != Constants.myName) {
-      String chatroomid = getChatRoomId(username, Constants.myName);
-      List<String?> users = [username, Constants.myName];
+    if (username != currUserId) {
+      String chatroomid = getChatRoomId(username, currUserId);
+      List<String?> users = [username, currUserId];
       Map<String, dynamic> chatRoomMap = {
         "users": users,
         "chatroomid": chatroomid
@@ -70,15 +71,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       tooltip: 'Send a Message.',
                       icon: const Icon(Icons.message_outlined),
                       onPressed: () {
-                        createRoomAndConvo(username: friend.name);
+                        createRoomAndConvo(username: friendUserId);
                       },
-                    ),
-                    IconButton(
-                      iconSize: 30,
-                      color: Colors.deepOrange,
-                      tooltip: 'Invite to a Game.',
-                      icon: const Icon(Icons.videogame_asset_rounded),
-                      onPressed: () {},
                     ),
                   ],
                 ),
@@ -96,7 +90,6 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
   }
 
-  String currUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

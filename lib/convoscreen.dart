@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nus_social/constants.dart';
 import 'package:nus_social/database.dart';
@@ -15,6 +16,7 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController messageController = new TextEditingController();
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Stream? chatMessagesStream;
 
@@ -27,10 +29,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
             return ListView.builder(
               itemCount: snapshot.data.docs.length,
               itemBuilder: (context, index) {
-                return MessageTile(
-                    snapshot.data.docs[index].data()["message"],
-                    snapshot.data.docs[index].data()["sendBy"] ==
-                        Constants.myName);
+                return MessageTile(snapshot.data.docs[index].data()["message"],
+                    snapshot.data.docs[index].data()["sendBy"] == currUserId);
               },
             );
           }
@@ -42,7 +42,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic?> messageMap = {
         "message": messageController.text,
-        "sendBy": Constants.myName,
+        "sendBy": currUserId,
         "time": DateTime.now().millisecondsSinceEpoch
       };
       databaseMethods.addConversationMessages(widget.chatRoomId, messageMap);
