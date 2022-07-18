@@ -43,7 +43,7 @@ dependencies:
   provider: ^6.0.3
   firebase_core: ^1.17.1
   file_picker: ^3.0.4
-  firebase_storage: ^10.2.18
+  firebase_storage: ^10.3.2
   grouped_list: ^5.1.2
   intl: ^0.17.0
   shared_preferences: ^2.0.15

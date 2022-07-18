@@ -98,6 +98,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                                 decoration: BoxDecoration(
                                     gradient: LinearGradient(colors: [
                                       Color.fromARGB(255, 23, 7, 255),
+                                      Color.fromARGB(255, 23, 8, 254)
                                     ]),
                                     borderRadius: BorderRadius.circular(40)),
                                 padding: EdgeInsets.all(12),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/material/color_scheme.dart';
+import 'package:nus_social/constants.dart';
 import 'package:nus_social/helperfuncts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -69,7 +70,6 @@ class _CreateProfileState extends State<CreateProfilePage> {
   Future createUserProfile(
       String name, String course, int year, String bio) async {
     final userRef = FirebaseAuth.instance.currentUser;
-    HelperFunctions.saveuserNameSharedPref(name);
 
     if (userRef != null) {
       final userID = userRef.uid;
@@ -90,6 +90,7 @@ class _CreateProfileState extends State<CreateProfilePage> {
       await docUser.set(user.toJson());
       uploadImg();
     }
+    HelperFunctions.saveuserNameSharedPref(name);
   }
 
   Future selectImg() async {
@@ -120,6 +121,8 @@ class _CreateProfileState extends State<CreateProfilePage> {
   }
 
   Widget profileCreationWidget(BuildContext context, Map<String, dynamic> map) {
+    HelperFunctions.saveuserNameSharedPref(nameController.text);
+    Constants.myName = nameController.text;
     UserObj user = map['user'];
 
     nameController.text = user.name;
@@ -199,6 +202,8 @@ class _CreateProfileState extends State<CreateProfilePage> {
                 final course = courseController.text;
                 final int year = int.parse(yearController.text);
                 final bio = bioController.text;
+                HelperFunctions.saveuserNameSharedPref(nameController.text);
+                Constants.myName = nameController.text;
 
                 createUserProfile(name, course, year, bio);
 

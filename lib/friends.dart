@@ -23,6 +23,7 @@ import 'package:nus_social/settings.dart';
 import 'package:nus_social/sign_in_page.dart';
 import 'package:nus_social/sign_up.dart';
 import 'package:nus_social/user_class.dart';
+import "package:nus_social/searchscreen.dart";
 
 class FriendsPage extends StatelessWidget {
   String currUserId = FirebaseAuth.instance.currentUser!.uid;
