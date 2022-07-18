@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:nus_social/constants.dart';
 import 'package:nus_social/convoscreen.dart';
 import 'package:nus_social/database.dart';
 import 'package:nus_social/home_page.dart';
+import 'package:nus_social/main.dart';
+import 'package:nus_social/user_class.dart';
 
 import 'add_friends.dart';
 
@@ -14,29 +17,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
-  TextEditingController search = TextEditingController();
-
-  QuerySnapshot<Map<String, dynamic>>? searchSnapshot;
-
-  initiateSearch() {
-    databaseMethods.getUserByUsername(search.text).then((val) {
-      setState(() {
-        searchSnapshot = val;
-      });
-    });
-  }
-
-  Widget searchList() {
-    return searchSnapshot != null
-        ? ListView.builder(
-            itemCount: searchSnapshot?.docs.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return SearchTile(
-                  userName: searchSnapshot?.docs[index].data()["name"]);
-            })
-        : Container();
-  }
 
   createRoomAndConvo({required String username}) {
     if (username != Constants.myName) {
@@ -56,26 +36,59 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  Widget SearchTile({required String userName}) {
-    return Container(
-        child: Row(
-      children: [
-        Column(
-          children: [Text(userName)],
-        ),
-        Spacer(),
-        GestureDetector(
-            onTap: () {
-              createRoomAndConvo(username: userName);
-            },
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(30)),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Message")))
-      ],
-    ));
+  Widget friendDetailsCard(BuildContext context, String friendUserId) {
+    return FutureBuilder(
+      future: UserObj.retrieveUserData(friendUserId),
+      builder:
+          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (!snapshot.hasData) {
+            return Container(
+              child: Text('Something went wrong, oops!'),
+            );
+          }
+          if (snapshot.hasError) {
+            return Container(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+          UserObj friend = snapshot.data!['user'];
+          NetworkImage image = snapshot.data!['image'];
+          return ExpansionTile(
+            leading: CircleAvatar(foregroundImage: image),
+            title: Text(friend.name),
+            children: [
+              ListTile(
+                title: Text(friend.course + ' Year ' + friend.year.toString()),
+                subtitle: Text(friend.bio),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      iconSize: 30,
+                      color: Colors.deepOrange,
+                      tooltip: 'Send a Message.',
+                      icon: const Icon(Icons.message_outlined),
+                      onPressed: () {
+                        createRoomAndConvo(username: friend.name);
+                      },
+                    ),
+                    IconButton(
+                      iconSize: 30,
+                      color: Colors.deepOrange,
+                      tooltip: 'Invite to a Game.',
+                      icon: const Icon(Icons.videogame_asset_rounded),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
   }
 
   @override
@@ -83,54 +96,59 @@ class _SearchScreenState extends State<SearchScreen> {
     super.initState();
   }
 
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SIGN UP',
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'SEARCH',
-              style: TextStyle(fontSize: 30),
-            ),
-            backgroundColor: Colors.deepOrange,
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                          },
-                          icon: const Icon(Icons.arrow_back))
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    child: TextField(
-                      controller: search,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'find users',
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chat with friends!'),
+        backgroundColor: Colors.deepOrange,
+      ),
+      body: Column(
+        children: [
+          FutureBuilder(
+            future: UserObj.retrieveUserFriends(currUserId),
+            builder: (BuildContext context,
+                AsyncSnapshot<Map<String, dynamic>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (!snapshot.hasData) {
+                  return Container(
+                    child: const Text('Something went wrong, oops!'),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Container(
+                    child: Text(snapshot.error.toString()),
+                  );
+                }
+                List<dynamic>? friendsList = snapshot.data!['friends'];
+
+                if (friendsList != null) {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: friendsList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        String userId = friendsList[index];
+                        return friendDetailsCard(context, userId);
+                      },
                     ),
-                  ),
-                  Container(
-                      height: 50,
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                      child: ElevatedButton(
-                        child: const Text('SEARCH'),
-                        onPressed: () {
-                          initiateSearch();
-                        },
-                      )),
-                  searchList()
-                ])),
-          )),
+                  );
+                }
+                return Column(
+                  children: <Widget>[
+                    const SizedBox(height: 200),
+                    const Icon(Icons.person_add_alt_1_outlined, size: 200.0),
+                    const Center(
+                        child: Text(
+                            'You have no friends yet, go add some friends!')),
+                  ],
+                );
+              }
+              return Expanded(child: loadingScreen(context));
+            },
+          ),
+        ],
+      ),
     );
   }
 }
