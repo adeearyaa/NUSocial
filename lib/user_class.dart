@@ -87,10 +87,20 @@ class UserObj {
 
   //Retrives user profile image only using the image name.
   static Future<ImageProvider> retrieveUserImage(String imgName) async {
+    //imgName is placeholder blank.
+    if (imgName == '-') {
+      return emptyAvatarImage;
+    }
+
     final imgRef =
         FirebaseStorage.instance.ref().child('profileImages/$imgName');
-    String imgUrl = await imgRef.getDownloadURL();
-    return NetworkImage(imgUrl);
+    try {
+      String imgUrl = await imgRef.getDownloadURL();
+      return NetworkImage(imgUrl);
+    } catch (e) {
+      print(imgName + e.toString());
+      return emptyAvatarImage;
+    }
   }
 
   //Retrives user friends document on firestore.
