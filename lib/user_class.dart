@@ -63,7 +63,7 @@ class UserObj {
       course: '-',
       year: 0,
       bio: '',
-      imgName: '');
+      imgName: 'avatar_blank.jpg');
 
   //Empty map with an empty user object and a default avatar picture.
   static Map<String, dynamic> emptyMap() => {
