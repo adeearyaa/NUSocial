@@ -1,16 +1,29 @@
 import "package:flutter/material.dart";
-import 'package:nus_social/createquiz.dart';
+import 'package:nus_social/main.dart';
+import 'package:nus_social/quiz/create_quiz.dart';
 import 'package:nus_social/database.dart';
-import 'package:nus_social/playquiz.dart';
+import 'package:nus_social/quiz/play_quiz.dart';
 
-class HomeGame extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io' as io;
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
+
+class QuizHome extends StatefulWidget {
   @override
-  _HomeGameState createState() => _HomeGameState();
+  _QuizHomeState createState() => _QuizHomeState();
 }
 
-class _HomeGameState extends State<HomeGame> {
+class _QuizHomeState extends State<QuizHome> {
   Stream? quizStream;
   DatabaseMethods databaseMethods = new DatabaseMethods();
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
 
   Widget quizList() {
     return Container(
@@ -18,19 +31,45 @@ class _HomeGameState extends State<HomeGame> {
       child: StreamBuilder(
           stream: quizStream,
           builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            return snapshot.data == null
-                ? Container()
-                : ListView.builder(
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (context, index) {
-                      return QuizTile(
-                          imgUrl:
-                              snapshot.data.docs[index].data()["quizImgUrl"],
-                          title: snapshot.data.docs[index].data()["quizTitle"],
-                          desc: snapshot.data.docs[index]
-                              .data()["quizDescription"],
-                          quizId: snapshot.data.docs[index].data()["quizId"]);
-                    });
+            if (!snapshot.hasData) {
+              return Container();
+            }
+            List<dynamic> quizzes = snapshot.data.docs
+                .where((doc) => doc.data()["quizAuthor"] == currUserId)
+                .toList();
+            if (quizzes.isEmpty) {
+              return Column(
+                children: <Widget>[
+                  const SizedBox(height: 200),
+                  const Icon(Icons.playlist_remove_outlined, size: 200.0),
+                  const Center(
+                      child: Text(
+                          "You haven't made any quizzes yet, try making some!")),
+                ],
+              );
+            }
+            return Column(
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: quizzes.length,
+                      itemBuilder: (context, index) {
+                        List<dynamic> quizzes = snapshot.data.docs
+                            .where(
+                                (doc) => doc.data()["quizAuthor"] == currUserId)
+                            .toList();
+
+                        return QuizTile(
+                          imgUrl: quizzes[index].data()["quizImgUrl"],
+                          title: quizzes[index].data()["quizTitle"],
+                          desc: quizzes[index].data()["quizDescription"],
+                          quizId: quizzes[index].data()["quizId"],
+                        );
+                      }),
+                ),
+              ],
+            );
           }),
     );
   }
@@ -73,6 +112,7 @@ class QuizTile extends StatelessWidget {
   final String title;
   final String desc;
   final String quizId;
+
   QuizTile(
       {required this.imgUrl,
       required this.title,

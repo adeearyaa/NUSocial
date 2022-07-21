@@ -1,7 +1,18 @@
 import "package:flutter/material.dart";
-import 'package:nus_social/addqns.dart';
+import 'package:nus_social/quiz/add_qns.dart';
 import 'package:nus_social/database.dart';
 import "package:random_string/random_string.dart";
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io' as io;
+import 'dart:typed_data';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CreateQuiz extends StatefulWidget {
   @override
@@ -13,6 +24,7 @@ class _CreateQuizState extends State<CreateQuiz> {
   late String quizImageUrl, quizTitle, quizDescription, quizId;
   DatabaseMethods databaseMethods = new DatabaseMethods();
   bool isLoading = false;
+  String currUserId = FirebaseAuth.instance.currentUser!.uid;
 
   createQuizOnline() async {
     if (_formKey.currentState!.validate()) {
@@ -26,7 +38,8 @@ class _CreateQuizState extends State<CreateQuiz> {
         "quizId": quizId,
         "quizImgUrl": quizImageUrl,
         "quizTitle": quizTitle,
-        "quizDescription": quizDescription
+        "quizDescription": quizDescription,
+        "quizAuthor": currUserId,
       };
 
       await databaseMethods.addQuizData(quizMap, quizId);

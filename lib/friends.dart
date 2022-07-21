@@ -9,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:nus_social/quiz/friends_quiz.dart';
 
 import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
@@ -120,9 +121,13 @@ class FriendsPage extends StatelessWidget {
                     IconButton(
                       iconSize: 30,
                       color: Colors.deepOrange,
-                      tooltip: 'Invite to a Game.',
-                      icon: const Icon(Icons.videogame_asset_rounded),
-                      onPressed: () {},
+                      tooltip: 'Try his quizzes!',
+                      icon: const Icon(Icons.quiz_outlined),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => FriendsQuizList(
+                                authorId: friend.id, authorName: friend.name)));
+                      },
                     ),
                   ],
                 ),

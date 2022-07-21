@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/chatroom.dart';
-import 'package:nus_social/forgetpassword.dart';
+import 'package:nus_social/forget_password.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';

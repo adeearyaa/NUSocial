@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/chatroom.dart';
-import 'package:nus_social/homegame.dart';
+import 'package:nus_social/game_home.dart';
+import 'package:nus_social/quiz/quiz_home.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                       ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomeGame()));
+                                builder: (context) => GamesPage()));
                           },
                           icon:
                               const Icon(Icons.emoji_events_outlined, size: 50),

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nus_social/Questionmodel.dart';
+import 'package:nus_social/quiz/question_class.dart';
 import 'package:nus_social/database.dart';
-import 'package:nus_social/quiz_play_widget.dart';
-import 'package:nus_social/quizresults.dart';
+import 'package:nus_social/quiz/quiz_play_widget.dart';
+import 'package:nus_social/quiz/quiz_results.dart';
 
 class PlayQuiz extends StatefulWidget {
   final String quizId;
