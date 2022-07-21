@@ -14,7 +14,7 @@ import 'package:nus_social/authentication.dart';
 
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
-import 'package:nus_social/games.dart';
+
 import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';

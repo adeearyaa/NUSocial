@@ -708,6 +708,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_native_splash (0.0.1):
     - Flutter
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - GoogleDataTransport (9.1.4):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
@@ -799,6 +802,9 @@ PODS:
   - SDWebImage/Core (5.13.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - SwiftyGif (5.4.3)
 
 DEPENDENCIES:
@@ -811,6 +817,7 @@ DEPENDENCIES:
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   trunk:
@@ -829,6 +836,7 @@ SPEC REPOS:
     - FirebaseFirestore
     - FirebaseStorage
     - FirebaseStorageInternal
+    - FMDB
     - GoogleDataTransport
     - GoogleUtilities
     - "gRPC-C++"
@@ -860,6 +868,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -884,6 +894,7 @@ SPEC CHECKSUMS:
   FirebaseStorageInternal: 50c963664bc73739b68eb2d8427c91de5168dbcf
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   "gRPC-C++": 9675f953ace2b3de7c506039d77be1f2e77a8db2
@@ -896,6 +907,7 @@ SPEC CHECKSUMS:
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   SDWebImage: 0327043dbb9533e75f2eff8445b3df0f2ceca6ac
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
 
 PODFILE CHECKSUM: 9d08adb5e3247684d920b96332a7ac61af4f84fd

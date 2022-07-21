@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nus_social/constants.dart';
 import 'package:nus_social/database.dart';
 import 'package:nus_social/helperfuncts.dart';
@@ -115,42 +116,45 @@ class MessageTile extends StatelessWidget {
   final String message;
   final bool isSendByMe;
   MessageTile(this.message, this.isSendByMe);
+  String tdata = DateFormat("HH:mm").format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
     if (message != null) {
       return Container(
-        padding: EdgeInsets.only(
-            left: isSendByMe ? 0 : 24, right: isSendByMe ? 24 : 0),
-        margin: EdgeInsets.symmetric(vertical: 8),
-        width: MediaQuery.of(context).size.width,
-        alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: isSendByMe
-                    ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
-                    : [
-                        Color.fromARGB(177, 215, 235, 37),
-                        Color.fromARGB(194, 238, 207, 30)
-                      ],
+          padding: EdgeInsets.only(
+              left: isSendByMe ? 0 : 24, right: isSendByMe ? 24 : 0),
+          margin: EdgeInsets.symmetric(vertical: 8),
+          width: MediaQuery.of(context).size.width,
+          alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
+          child: Column(children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: isSendByMe
+                        ? [const Color(0xff007EF4), const Color(0xff2A75BC)]
+                        : [
+                            Color.fromARGB(177, 215, 235, 37),
+                            Color.fromARGB(194, 238, 207, 30)
+                          ],
+                  ),
+                  borderRadius: isSendByMe
+                      ? BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomLeft: Radius.circular(23))
+                      : BorderRadius.only(
+                          topLeft: Radius.circular(23),
+                          topRight: Radius.circular(23),
+                          bottomRight: Radius.circular(23))),
+              child: Text(
+                message,
+                style: TextStyle(color: Colors.black, fontSize: 17),
               ),
-              borderRadius: isSendByMe
-                  ? BorderRadius.only(
-                      topLeft: Radius.circular(23),
-                      topRight: Radius.circular(23),
-                      bottomLeft: Radius.circular(23))
-                  : BorderRadius.only(
-                      topLeft: Radius.circular(23),
-                      topRight: Radius.circular(23),
-                      bottomRight: Radius.circular(23))),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.black, fontSize: 17),
-          ),
-        ),
-      );
+            ),
+            Container(child: Text(tdata)),
+          ]));
     }
     return Text("gonez");
   }

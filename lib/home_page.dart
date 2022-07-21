@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/material/color_scheme.dart';
 import 'package:nus_social/chatroom.dart';
+import 'package:nus_social/homegame.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +17,7 @@ import 'package:nus_social/authentication.dart';
 
 import 'package:nus_social/create_profile.dart';
 import 'package:nus_social/friends.dart';
-import 'package:nus_social/games.dart';
+
 import 'package:nus_social/home_page.dart';
 import 'package:nus_social/main.dart';
 import 'package:nus_social/profile.dart';
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                       ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => GamesPage()));
+                                builder: (context) => HomeGame()));
                           },
                           icon:
                               const Icon(Icons.emoji_events_outlined, size: 50),
