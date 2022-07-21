@@ -11,6 +11,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:email_validator/email_validator.dart';
 
 import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
@@ -61,23 +62,32 @@ class _SignInPageState extends State<SignInPage> {
                 )),
             Container(
               padding: const EdgeInsets.all(10),
-              child: TextField(
+              child: TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'E-Mail',
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                        ? 'Enter a valid E-Mail address'
+                        : null,
               ),
             ),
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: TextField(
+              child: TextFormField(
                 obscureText: true,
                 controller: passwordController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (pass) => pass!.length < 6
+                    ? 'Password needs to be at least 6 characters long'
+                    : null,
               ),
             ),
             TextButton(

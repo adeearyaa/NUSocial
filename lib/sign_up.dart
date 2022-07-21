@@ -9,6 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io' as io;
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:email_validator/email_validator.dart';
 
 import 'package:nus_social/add_friends.dart';
 import 'package:nus_social/authentication.dart';
@@ -73,34 +74,47 @@ class _SignUpPageState extends State<SignUpPage> {
                       )),
                   Container(
                     padding: const EdgeInsets.all(20),
-                    child: TextField(
+                    child: TextFormField(
                       controller: newid,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Enter your E-Mail address',
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (email) =>
+                          email != null && !EmailValidator.validate(email)
+                              ? 'Enter a valid E-Mail address'
+                              : null,
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: TextField(
+                    child: TextFormField(
                       obscureText: true,
                       controller: newpassword,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'New Password (At least 6 characters)',
+                        labelText: 'New Password',
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (pass) => pass!.length < 6
+                          ? 'Password needs to be at least 6 characters long'
+                          : null,
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    child: TextField(
+                    child: TextFormField(
                       obscureText: true,
                       controller: secondpassword,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Confirm Password',
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (pass) => pass == secondpassword.text
+                          ? 'Password does not match'
+                          : null,
                     ),
                   ),
                   Container(
