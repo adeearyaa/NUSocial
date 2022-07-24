@@ -106,7 +106,7 @@ class FriendsQuizHome extends StatelessWidget {
             );
           }
           UserObj friend = snapshot.data!['user'];
-          NetworkImage image = snapshot.data!['image'];
+          ImageProvider image = snapshot.data!['image'];
           return ListTile(
             leading: CircleAvatar(foregroundImage: image),
             title: Text(friend.name),
