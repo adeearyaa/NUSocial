@@ -26,8 +26,30 @@ import 'package:nus_social/sign_up.dart';
 import 'package:nus_social/user_class.dart';
 import "package:nus_social/searchscreen.dart";
 
+import 'convoscreen.dart';
+import 'database.dart';
+
 class FriendsPage extends StatelessWidget {
   String currUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  createRoomAndConvo(String username, BuildContext context) {
+    if (username != currUserId) {
+      String chatroomid = getChatRoomId(username, currUserId);
+      List<String?> users = [username, currUserId];
+      Map<String, dynamic> chatRoomMap = {
+        "users": users,
+        "chatroomid": chatroomid
+      };
+      DatabaseMethods().createChatRoom(chatroomid, chatRoomMap);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ConversationScreen(chatroomid)));
+    } else {
+      print("you cannot select your own name");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +138,9 @@ class FriendsPage extends StatelessWidget {
                       color: Colors.deepOrange,
                       tooltip: 'Send a Message.',
                       icon: const Icon(Icons.message_outlined),
-                      onPressed: () {},
+                      onPressed: () {
+                        createRoomAndConvo(friend.id, context);
+                      },
                     ),
                     IconButton(
                       iconSize: 30,
