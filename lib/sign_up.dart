@@ -112,7 +112,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelText: 'Confirm Password',
                       ),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (pass) => pass == secondpassword.text
+                      validator: (pass) => pass != newpassword.text
                           ? 'Password does not match'
                           : null,
                     ),
