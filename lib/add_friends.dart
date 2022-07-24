@@ -340,7 +340,7 @@ class _SendRequestButtonState extends State<SendRequestButton> {
     await FirebaseFirestore.instance
         .collection('usersFriends')
         .doc(recieverUserId)
-        .set({
+        .update({
       "requests": FieldValue.arrayUnion([senderUserId])
     });
   }
@@ -453,19 +453,19 @@ class _AcceptRequestButtonState extends State<AcceptRequestButton> {
     await FirebaseFirestore.instance
         .collection('usersFriends')
         .doc(recieverUserId)
-        .set({
+        .update({
       "requests": FieldValue.arrayRemove([senderUserId])
     });
     await FirebaseFirestore.instance
         .collection('usersFriends')
         .doc(recieverUserId)
-        .set({
+        .update({
       "friends": FieldValue.arrayUnion([senderUserId])
     });
     await FirebaseFirestore.instance
         .collection('usersFriends')
         .doc(senderUserId)
-        .set({
+        .update({
       "friends": FieldValue.arrayUnion([recieverUserId])
     });
   }
